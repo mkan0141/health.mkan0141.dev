@@ -6,7 +6,8 @@
     "build": "vite build",
     "lint": "eslint --ext .ts,tsx; stylelint src/**/*.{css,scss}",
     "lint:script": "eslint --ext .ts,tsx",
-    "lint:style": "stylelint src/**/*.{css,scss}"
+    "lint:style": "stylelint src/**/*.{css,scss}",
+    "deploy:functions": "./script/deploy-firebase-functions.sh"
   },
   "dependencies": {
     "@types/chart.js": "^2.9.37",
