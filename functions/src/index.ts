@@ -16,7 +16,7 @@ function transformInnerScanData(innerScanDataList: InnerScanData[]) {
 
   for (let innerScanData of innerScanDataList) {
     const { date, keydata, tag } = innerScanData
-    const datetime = dayjs(date).format('YYYY-MM-DD')
+    const datetime = dayjs(date).subtract(3, 'hour').format('YYYY-MM-DD') // 寝るまでが一日なので...
     const tagName = tag == '6021' ? 'weight' : 'bfp'
 
     transformedData[datetime] = Object.assign(transformedData[datetime] || {}, {
