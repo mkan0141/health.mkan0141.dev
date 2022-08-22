@@ -9,10 +9,12 @@ import axios, { AxiosRequestConfig, AxiosResponse } from 'axios'
 import 'dayjs/locale/ja'
 dayjs.locale('ja')
 
-import { InnerScanData, InnerScanDataInformation } from './type'
+import { InnerScanData, InnerScanDataInformation, HealthData } from './type'
 
-function transformInnerScanData(innerScanDataList: InnerScanData[]) {
-  const transformedData: { [key: string]: Object } = {}
+function transformInnerScanData(
+  innerScanDataList: InnerScanData[]
+): HealthData[] {
+  const transformedData: { [key: string]: HealthData } = {}
 
   for (let innerScanData of innerScanDataList) {
     const { date, keydata, tag } = innerScanData
@@ -25,7 +27,9 @@ function transformInnerScanData(innerScanDataList: InnerScanData[]) {
     })
   }
 
-  return transformedData
+  return Object.values(transformedData).sort((a, b) =>
+    dayjs(a.date).isAfter(dayjs(b.date)) ? 1 : -1
+  )
 }
 
 async function fetchInnerScanData(): Promise<InnerScanDataInformation> {
@@ -53,12 +57,10 @@ exports.recordHealthData = functions
   .timeZone('Asia/Tokyo')
   .onRun(async () => {
     const innerScanDataList = await fetchInnerScanData()
-    const transformedInnerScanDataList = transformInnerScanData(
-      innerScanDataList.data
-    )
+    const healthDataList = transformInnerScanData(innerScanDataList.data)
 
     const GAS_URL = process.env['GAS_URL'] as string
     axios.post(GAS_URL, {
-      health_data: Object.values(transformedInnerScanDataList),
+      health_data: healthDataList,
     })
   })

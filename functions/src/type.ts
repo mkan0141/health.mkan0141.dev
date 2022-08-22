@@ -11,3 +11,9 @@ export type InnerScanDataInformation = {
   height: string
   sex: string
 }
+
+export type HealthData = {
+  date: string
+  weight?: number
+  bfp?: number
+}
